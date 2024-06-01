@@ -1,5 +1,6 @@
 package com.techietact.mycognitiv.candidate.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -15,7 +16,9 @@ import lombok.Data;
 @MappedSuperclass
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AuditableEntity {
+public abstract class AuditableEntity implements Serializable {
+
+	private static final long serialVersionUID = 5578905690385385817L;
 
 	@Column(name = "is_deleted", nullable = false)
 	private boolean isDeleted;

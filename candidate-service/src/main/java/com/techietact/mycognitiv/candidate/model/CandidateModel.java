@@ -17,6 +17,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class CandidateModel extends AuditableModel {
 
+	private static final long serialVersionUID = 6205305264083330343L;
+
 	private long candidateId ; 
 	
 	@NotBlank(message = "Name is required",groups= {ValidCreation.class,ValidUpdation.class})

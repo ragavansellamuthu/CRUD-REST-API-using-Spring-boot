@@ -1,5 +1,7 @@
 package com.techietact.mycognitiv.candidate.entity;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +15,9 @@ import lombok.EqualsAndHashCode;
 @Table(name="candidate")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class CandidateEntity extends AuditableEntity{
+public class CandidateEntity extends AuditableEntity implements Serializable{
+
+	private static final long serialVersionUID = 1177176105056996641L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
