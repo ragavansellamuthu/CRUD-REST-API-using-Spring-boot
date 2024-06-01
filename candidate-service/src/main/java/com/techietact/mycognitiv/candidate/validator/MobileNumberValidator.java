@@ -9,7 +9,7 @@ public class MobileNumberValidator implements ConstraintValidator<MobileNumber,L
 
 	@Override
 	public boolean isValid(Long value, ConstraintValidatorContext context) {
-		return (value!=null)?value >= 6000000000L && value<=9999999999L:false;
+		return value >= 6000000000L && value<=9999999999L;
 	}
 
 }

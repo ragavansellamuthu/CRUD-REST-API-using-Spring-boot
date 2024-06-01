@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import com.techietact.mycognitiv.candidate.model.ErrorResponseModel;
+import com.techietact.mycognitiv.candidate.response.ErrorResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
@@ -20,7 +20,7 @@ public class GlobalExceptionHandler extends Exception{
 	private static final long serialVersionUID = -118487552102286087L;
 	
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponseModel> exception(Exception e){
+	public ResponseEntity<ErrorResponse> exception(Exception e){
 		
 		log.debug(e);
 		
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler extends Exception{
 			statusCode = 500 ; 
 		}
 		
-		ErrorResponseModel model = new ErrorResponseModel(statusCode,e.getMessage(),null);
+		ErrorResponse model = new ErrorResponse(statusCode,e.getMessage(),null);
 		
 		log.info(model);	
 		

@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import com.techietact.mycognitiv.candidate.model.ErrorResponseModel;
+import com.techietact.mycognitiv.candidate.response.ErrorResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -33,7 +33,7 @@ public class CustomUtils {
 		for (FieldError error : result.getFieldErrors()) {
 			fieldErrors.put(error.getField(), error.getDefaultMessage());
 		}
-		ErrorResponseModel model = new ErrorResponseModel(400, "Bad Request", fieldErrors);
+		ErrorResponse model = new ErrorResponse(400, "Bad Request", fieldErrors);
 		log.error(model);
 		return ResponseEntity.badRequest().body(model);
 	}
