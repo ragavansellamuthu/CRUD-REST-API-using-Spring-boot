@@ -9,7 +9,7 @@ public class AgeValidator implements ConstraintValidator<Age, Integer>{
 
 	@Override
 	public boolean isValid(Integer age, ConstraintValidatorContext context) {
-		return age!=null && age>=18;
+		return age>=18;
 	}
 
 }

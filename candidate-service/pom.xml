@@ -13,9 +13,7 @@
 	<artifactId>candidate-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>candidate-service</name>
-	<description>candidate service for MyCognitiv application. Includes crud of
-		candidates,batches,viewing test results and all other things except
-		attending an exam.</description>
+	<description>Candidate service for MyCognitiv application</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2021.0.8</spring-cloud.version>
