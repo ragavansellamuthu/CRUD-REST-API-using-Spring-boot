@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +29,7 @@ public class CandidateServiceImpl implements CandidateService {
 	private final CandidateRepository candidateRepository;
 
 	private final ModelMapper modelMapper;
-	
+
 	private CandidateModel convert(CandidateEntity entity) {
 		CandidateModel model = modelMapper.map(entity, CandidateModel.class);
 		model.setPassword(null);
@@ -39,7 +42,7 @@ public class CandidateServiceImpl implements CandidateService {
 
 	private CandidateEntity getCandidate(long candidateId) {
 		CandidateEntity entity = candidateRepository.findByCandidateIdAndIsDeletedFalse(candidateId);
-		if(entity==null) {
+		if (entity == null) {
 			throw new EntityNotFoundException("Candidate not found for ID : " + candidateId);
 		}
 		return entity;
@@ -51,18 +54,21 @@ public class CandidateServiceImpl implements CandidateService {
 	}
 
 	@Override
+	@Cacheable(value = "Candidate", key = "#candidateId")
 	public CandidateModel viewCandidate(long candidateId) {
 		return convert(getCandidate(candidateId));
 	}
-	
+
 	@Override
+	@CachePut(value = "Candidate", key = "#candidateId")
 	public CandidateModel updateCandidate(CandidateModel model) {
-		CandidateEntity entity = convert(model) ;
+		CandidateEntity entity = convert(model);
 		entity.setPassword(getCandidate(model.getCandidateId()).getPassword());
 		return convert(candidateRepository.save(entity));
 	}
 
 	@Override
+	@CacheEvict(value = "Candidate", key = "#candidateId")
 	public Boolean deleteCandidate(long candidateId, long deletedBy) {
 		CandidateEntity entity = getCandidate(candidateId);
 		entity.setDeleted(true);
@@ -81,15 +87,17 @@ public class CandidateServiceImpl implements CandidateService {
 	public Boolean isDuplicateEmail(long candidateId, String email) {
 		CandidateEntity entity = getCandidate(candidateId);
 		String existingEmail = entity.getEmail();
-		if(email.equals(existingEmail)) {
-			return false ;
+		if (email.equals(existingEmail)) {
+			return false;
 		}
 		return isDuplicateEmail(email);
 	}
 
 	@Override
-	public Page<CandidateModel> paginateCandidates(int pageIndex , int pageSize , String attributeName , String sortOrder , String searchText) {
-		Pageable pageable = PageRequest.of(pageIndex,pageSize,CustomUtils.sort(attributeName, sortOrder));
+	@Cacheable(value = "Candidates")
+	public Page<CandidateModel> paginateCandidates(int pageIndex, int pageSize, String attributeName, String sortOrder,
+			String searchText) {
+		Pageable pageable = PageRequest.of(pageIndex, pageSize, CustomUtils.sort(attributeName, sortOrder));
 		Page<CandidateEntity> entityPage = null;
 		if (StringUtils.hasText(searchText)) {
 			entityPage = candidateRepository.findAllByNameContainingIgnoreCaseAndIsDeletedFalse(searchText, pageable);
