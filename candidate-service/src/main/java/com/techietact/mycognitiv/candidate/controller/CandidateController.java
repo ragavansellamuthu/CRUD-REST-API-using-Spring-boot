@@ -1,5 +1,7 @@
 package com.techietact.mycognitiv.candidate.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -64,6 +66,11 @@ public class CandidateController {
 	@DeleteMapping("/{candidateId}/{deletedBy}")
 	public ResponseEntity<Boolean> deleteCandidate(@PathVariable("candidateId") long candidateId, @PathVariable("deletedBy") long deletedBy){
 		return ResponseEntity.ok(candidateService.deleteCandidate(candidateId, deletedBy));
+	}
+	
+	@GetMapping("/list")
+	public ResponseEntity<List<CandidateModel>> getAllCandidates() {
+		return ResponseEntity.ok(candidateService.listAllCandidates());
 	}
 	
 	@GetMapping("/page")
