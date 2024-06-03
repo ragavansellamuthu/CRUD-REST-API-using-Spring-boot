@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.techietact.mycognitiv.candidate.entity.CandidateEntity;
+import com.techietact.mycognitiv.candidate.exception.InvalidPropertyException;
 import com.techietact.mycognitiv.candidate.model.CandidateModel;
 import com.techietact.mycognitiv.candidate.repository.CandidateRepository;
 import com.techietact.mycognitiv.candidate.util.CustomUtils;
@@ -44,29 +45,41 @@ public class CandidateServiceImpl implements CandidateService {
 	}
 
 	@Override
-	public CandidateModel createCandidate(CandidateModel model) {
-		return convert(candidateRepository.save(convert(model)));
+	public CandidateModel createCandidate(CandidateModel model){
+		if(model!=null && model.getCreatedBy()>0) {
+			return convert(candidateRepository.save(convert(model)));
+		}
+		throw new InvalidPropertyException("Invalid or Missing property : 'createdBy'");
 	}
 
 	@Override
 	public CandidateModel viewCandidate(long candidateId) {
-		return convert(getCandidate(candidateId));
+		if(candidateId > 0) {
+			return convert(getCandidate(candidateId));
+		}
+		throw new InvalidPropertyException("Invalid or Missing  Property : 'candidateId'");
 	}
 
 	@Override
 	public CandidateModel updateCandidate(CandidateModel model) {
-		CandidateEntity entity = convert(model);
-		entity.setPassword(getCandidate(model.getCandidateId()).getPassword());
-		return convert(candidateRepository.save(entity));
+		if(model!=null && model.getCandidateId()>0 && model.getModifiedBy()>0) {
+			CandidateEntity entity = convert(model);
+			entity.setPassword(getCandidate(model.getCandidateId()).getPassword());
+			return convert(candidateRepository.save(entity));
+		}
+		throw new InvalidPropertyException("Invalid or Missing Property : Check validity for Properties : 'candidateId' and 'modifiedBy'");
 	}
 
 	@Override
 	public Boolean deleteCandidate(long candidateId, long deletedBy) {
-		CandidateEntity entity = getCandidate(candidateId);
-		entity.setDeleted(true);
-		entity.setDeletedBy(deletedBy);
-		entity = candidateRepository.save(entity);
-		return entity.isDeleted();
+		if( candidateId > 0 && deletedBy > 0) {
+			CandidateEntity entity = getCandidate(candidateId);
+			entity.setDeleted(true);
+			entity.setDeletedBy(deletedBy);
+			entity = candidateRepository.save(entity);
+			return entity.isDeleted();
+		}
+		throw new InvalidPropertyException("Invalid or Missing  Property : Check validity for Properties : 'candidateId' and 'deletedBy'");
 	}
 	
 	@Override
